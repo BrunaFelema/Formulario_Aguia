@@ -44,7 +44,7 @@ with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: #242480;'>AGUIA<br><small>S I S T E M A S</small></h2>", unsafe_allow_html=True)
     st.markdown("<div class='bd-conectado'>Banco de Dados Conectado</div>", unsafe_allow_html=True)
 
-# 4. CABECALHO TECNICO FIXO (Baseado no modelo de controle de documentos)
+# 4. CABECALHO TECNICO FIXO (Fiel ao modelo de controle de documentos)
 st.markdown("""
     <table style="width:100%; border-collapse: collapse; border: 2px solid black; font-family: sans-serif;">
         <tr>
@@ -99,7 +99,8 @@ with st.form(key="form_inspecao"):
     with col1:
         data_insp = st.date_input("Data", datetime.date.today())
     with col2:
-        hora_insp = st.time_input("Hora", datetime.datetime.now().time())
+        # Campo de hora alterado para preenchimento manual (texto) conforme solicitado
+        hora_insp = st.text_input("Hora (Ex: 14:30)", value=datetime.datetime.now().strftime("%H:%M"))
     with col3:
         op = st.text_input("O.P.")
     with col4:
@@ -147,7 +148,7 @@ if submit_button:
             
             dados = {
                 "entry.304430330": data_insp.strftime("%d/%m/%Y"), 
-                "entry.280988980": hora_insp.strftime("%H:%M"),    
+                "entry.280988980": hora_insp, # Envia o texto digitado manualmente   
                 "entry.385276294": op,
                 "entry.15366618": inspetor,
                 "entry.283351221": med_a,
