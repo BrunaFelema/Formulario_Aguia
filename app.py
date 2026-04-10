@@ -82,7 +82,7 @@ st.markdown("""
     <br>
 """, unsafe_allow_html=True)
 
-# 5. INSTRUCOES DE MEDICAO
+# 5. INSTRUCOES DE MEDICAO (Extraídas do procedimento operacional)
 with st.expander("Instrucoes de Medicao - Procedimento Operacional"):
     st.markdown("""
     * **1 PASSO:** Perfil - marcar as medidas de A, B, C, D, E e F conforme a imagem. Comparar medida D com a diferenca entre A e F.
@@ -99,8 +99,8 @@ with st.form(key="form_inspecao"):
     with col1:
         data_insp = st.date_input("Data", datetime.date.today())
     with col2:
-        # Campo de hora alterado para preenchimento manual (texto) conforme solicitado
-        hora_insp = st.text_input("Hora (Ex: 14:30)", value=datetime.datetime.now().strftime("%H:%M"))
+        # Campo de hora agora totalmente em branco para preenchimento manual
+        hora_insp = st.text_input("Hora (Ex: 14:30)")
     with col3:
         op = st.text_input("O.P.")
     with col4:
@@ -140,15 +140,15 @@ with st.form(key="form_inspecao"):
 
 # 7. LOGICA DE ENVIO
 if submit_button:
-    if not op or not inspetor:
-        st.warning("Atenção: Os campos O.P. e Inspetor sao obrigatorios.")
+    if not op or not inspetor or not hora_insp:
+        st.warning("Atenção: Os campos O.P., Inspetor e Hora sao obrigatorios.")
     else:
         try:
             URL_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSf2uGDngL6tPY474Zat9cDIpLawV5s7uyHZXoDFhA3hlieEPA/formResponse"
             
             dados = {
                 "entry.304430330": data_insp.strftime("%d/%m/%Y"), 
-                "entry.280988980": hora_insp, # Envia o texto digitado manualmente   
+                "entry.280988980": hora_insp,
                 "entry.385276294": op,
                 "entry.15366618": inspetor,
                 "entry.283351221": med_a,
