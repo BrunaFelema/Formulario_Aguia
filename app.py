@@ -21,15 +21,6 @@ st.markdown("""
         text-transform: uppercase;
         font-size: 14px;
     }
-    .bd-conectado {
-        background-color: #d4edda;
-        color: #155724;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        font-weight: bold;
-        border: 1px solid #c3e6cb;
-    }
     .stButton>button {
         background-color: #242480;
         color: white;
@@ -42,12 +33,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Barra Lateral
-with st.sidebar:
-    st.markdown("<h2 style='text-align: center; color: #242480;'>AGUIA<br><small>S I S T E M A S</small></h2>", unsafe_allow_html=True)
-    st.markdown("<div class='bd-conectado'>Banco de Dados Conectado</div>", unsafe_allow_html=True)
-
-# 4. CABECALHO TECNICO FIXO (Fiel ao modelo de controle de documentos)
+# 3. CABECALHO TECNICO FIXO
 st.markdown("""
     <table style="width:100%; border-collapse: collapse; border: 2px solid black; font-family: sans-serif;">
         <tr>
@@ -85,9 +71,8 @@ st.markdown("""
     <br>
 """, unsafe_allow_html=True)
 
-# 5. FORMULARIO DE REGISTRO
+# 4. FORMULARIO DE REGISTRO
 with st.form(key="form_inspecao"):
-
     st.markdown("<div class='secao-header'>Identificacao da Inspecao</div>", unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -121,7 +106,7 @@ with st.form(key="form_inspecao"):
     st.markdown("<br>", unsafe_allow_html=True)
     submit_button = st.form_submit_button(label="SALVAR REGISTRO")
 
-# 6. LOGICA DE ENVIO (Com IDs extraidos do seu link pessoal)
+# 5. LOGICA DE ENVIO COM FIX PARA ERRO 401
 if submit_button:
     if not re.match(r"^\d{2}:\d{2}$", hora_insp):
         st.error("Erro: Formato de hora invalido. Use HH:MM.")
@@ -129,10 +114,8 @@ if submit_button:
         st.warning("Atencao: O.P. e Inspetor sao obrigatorios.")
     else:
         try:
-            # URL de resposta do seu novo formulario pessoal
             URL_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSc0SmUvQcLjdFhDfh3JeJgYJ617dm2OSWIt9lYy5tB21gYkeg/formResponse"
             
-            # Mapeamento exato baseado no link preenchido que voce enviou
             dados = {
                 "entry.140980643": data_insp.strftime("%d/%m/%Y"), 
                 "entry.1282881006": hora_insp,
@@ -152,7 +135,13 @@ if submit_button:
             }
 
             data_encoded = urllib.parse.urlencode(dados).encode("utf-8")
-            req = urllib.request.Request(URL_FORM, data=data_encoded)
+            
+            # Adicionando Headers para simular navegador e evitar erro 401
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            
+            req = urllib.request.Request(URL_FORM, data=data_encoded, headers=headers)
             urllib.request.urlopen(req)
             
             st.success("Registro enviado com sucesso.")
