@@ -5,7 +5,7 @@ import requests
 import json
 import base64
 
-# 1. FUNÇÃO PARA CARREGAR A IMAGEM LOCAL (logo.png.jpg)
+# 1. FUNÇÃO PARA CARREGAR AS IMAGENS LOCAIS
 def carregar_imagem_local(caminho_arquivo):
     try:
         with open(caminho_arquivo, "rb") as image_file:
@@ -14,14 +14,15 @@ def carregar_imagem_local(caminho_arquivo):
     except FileNotFoundError:
         return ""
 
-# Tenta carregar a logo que você subiu
-IMG_LOGO = carregar_imagem_local("logo.png.jpg")
+# Carrega as duas imagens que você subiu no GitHub
+IMG_SIDEBAR = carregar_imagem_local("logo_lateral.png")
+IMG_HEADER = carregar_imagem_local("logo_topo.png")
 
 # 2. CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(page_title="Inspeção Perfiladeira - Águia Sistemas", layout="wide")
 
-# 3. DEFINIÇÃO DA NOVA COR E ESTILOS CSS
-COR_DETALHE = "#242480" # A cor que você solicitou
+# 3. DEFINIÇÃO DA COR E ESTILOS CSS
+COR_DETALHE = "#242480" 
 CINZA_FUNDO_INPUT = "#F0F2F6"
 
 st.markdown(f"""
@@ -70,16 +71,16 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# 4. SIDEBAR
-if IMG_LOGO:
-    st.sidebar.markdown(f'<img src="{IMG_LOGO}" class="sidebar-logo">', unsafe_allow_html=True)
+# 4. SIDEBAR (Usando logo_lateral.png)
+if IMG_SIDEBAR:
+    st.sidebar.markdown(f'<img src="{IMG_SIDEBAR}" class="sidebar-logo">', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="status-badge">🟢 Banco de Dados Conectado</div>', unsafe_allow_html=True)
 
 # 5. CONTEÚDO PRINCIPAL
-# A. Cabeçalho com Logo Local e Dados de Controle
+# A. Cabeçalho com Logo Local (Usando logo_topo.png) e Dados de Controle
 st.markdown(f"""
     <div class="header-card">
-        <img src="{IMG_LOGO}" class="header-logo">
+        <img src="{IMG_HEADER}" class="header-logo">
         <div style="flex-grow: 1;">
             <div class="header-title-label">DADOS DE CONTROLE</div>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 12px;">
