@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 import re
 import requests
+import urllib.parse  # <-- Esta é a linha que estava faltando!
 
 # 1. Configuração Visual
 st.set_page_config(page_title="Inspeção Perfiladeira - Águia Sistemas", layout="wide")
@@ -79,8 +80,7 @@ if submit:
             full_url = f"{base_url}?{urllib.parse.urlencode(params)}"
             response = requests.get(full_url)
 
-            # O Google retorna 200 mesmo se der erro visual, 
-            # mas o GET costuma "furar" o bloqueio 401.
+            # O Google retorna 200 mesmo se der erro visual, mas o GET costuma "furar" o bloqueio.
             if response.ok:
                 st.success("Registro salvo com sucesso na planilha!")
             else:
