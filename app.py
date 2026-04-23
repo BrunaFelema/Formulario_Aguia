@@ -14,7 +14,7 @@ def carregar_imagem_local(caminho_arquivo):
     except FileNotFoundError:
         return ""
 
-# Carrega as duas imagens que você subiu no GitHub
+# Carrega as imagens que você subiu no GitHub
 IMG_SIDEBAR = carregar_imagem_local("logo_lateral.png")
 IMG_HEADER = carregar_imagem_local("logo_topo.png")
 
@@ -48,7 +48,7 @@ st.markdown(f"""
     .header-logo {{ width: 80px; margin-right: 20px; max-height: 60px; object-fit: contain; }}
     .header-title-label {{ color: #757575; font-weight: 600; text-transform: uppercase; font-size: 12px; margin-bottom: 10px; }}
 
-    /* Títulos de Seção (Barra com a sua Cor) */
+    /* Títulos de Seção */
     .section-header {{
         border-left: 5px solid {COR_DETALHE}; background-color: #f7f9fc; color: {COR_DETALHE};
         padding: 10px 15px; text-transform: uppercase; font-weight: 600; font-size: 14px;
@@ -60,7 +60,7 @@ st.markdown(f"""
     .passos-table td {{ border: 1px solid #E0E0E0; padding: 8px; }}
     .passo-col-num {{ background-color: #F8FAFC; font-weight: bold; width: 10%; text-align: center; color: {COR_DETALHE}; }}
 
-    /* Botão Salvar com a sua Cor */
+    /* Botão Salvar */
     .stButton>button {{
         background-color: {COR_DETALHE}; color: white; border-radius: 8px; width: 100%;
         font-weight: bold; border: none; padding: 12px; margin-top: 20px;
@@ -71,13 +71,13 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# 4. SIDEBAR (Usando logo_lateral.png)
+# 4. SIDEBAR
 if IMG_SIDEBAR:
     st.sidebar.markdown(f'<img src="{IMG_SIDEBAR}" class="sidebar-logo">', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="status-badge">🟢 Banco de Dados Conectado</div>', unsafe_allow_html=True)
 
 # 5. CONTEÚDO PRINCIPAL
-# A. Cabeçalho com Logo Local (Usando logo_topo.png) e Dados de Controle
+# A. Cabeçalho Atualizado com Bruna Felema
 st.markdown(f"""
     <div class="header-card">
         <img src="{IMG_HEADER}" class="header-logo">
@@ -90,6 +90,9 @@ st.markdown(f"""
                 <div><b>Revisão:</b> 6</div>
                 <div><b>Setor:</b> Qualidade Industrial</div>
                 <div><b>Inspeção:</b> <span style="color:red; font-weight:bold;">A cada 60 minutos</span></div>
+                <div style="grid-column: span 3; border-top: 1px solid #EEE; padding-top: 5px; margin-top: 5px;">
+                    <b>Desenvolvido por:</b> Bruna Felema, Desenvolvedor Web
+                </div>
             </div>
         </div>
     </div>
@@ -108,7 +111,7 @@ st.markdown("""
     </table>
 """, unsafe_allow_html=True)
 
-# C. Formulário
+# C. Formulário - Ajustado para não arredondar campos numéricos
 with st.form(key="form_inspecao"):
     st.markdown('<div class="section-header">REGISTROS DE QUALIDADE</div>', unsafe_allow_html=True)
     
@@ -118,19 +121,20 @@ with st.form(key="form_inspecao"):
     with c3: op = st.text_input("O.P.")
     with c4: inspetor = st.text_input("Inspetor")
 
+    # Removido o format="%.2f" para não forçar arredondamento visual
     col_a, col_b, col_c, col_d, col_e, col_f, col_g = st.columns(7)
-    with col_a: med_a = st.number_input("A", format="%.2f", step=0.01)
-    with col_b: med_b = st.number_input("B", format="%.2f", step=0.01)
-    with col_c: med_c = st.number_input("C", format="%.2f", step=0.01)
-    with col_d: med_d = st.number_input("D", format="%.2f", step=0.01)
-    with col_e: med_e = st.number_input("E", format="%.2f", step=0.01)
-    with col_f: med_f = st.number_input("F", format="%.2f", step=0.01)
-    with col_g: med_g = st.number_input("G", format="%.2f", step=0.01)
+    with col_a: med_a = st.number_input("A", step=0.001)
+    with col_b: med_b = st.number_input("B", step=0.001)
+    with col_c: med_c = st.number_input("C", step=0.001)
+    with col_d: med_d = st.number_input("D", step=0.001)
+    with col_e: med_e = st.number_input("E", step=0.001)
+    with col_f: med_f = st.number_input("F", step=0.001)
+    with col_g: med_g = st.number_input("G", step=0.001)
 
     ce1, ce2, cg = st.columns(3)
-    with ce1: emp1 = st.number_input("Empenamento 1", format="%.2f", step=0.01)
-    with ce2: emp2 = st.number_input("Empenamento 2", format="%.2f", step=0.01)
-    with cg: gap = st.number_input("Gap", format="%.2f", step=0.01)
+    with ce1: emp1 = st.number_input("Empenamento 1", step=0.001)
+    with ce2: emp2 = st.number_input("Empenamento 2", step=0.001)
+    with cg: gap = st.number_input("Gap", step=0.001)
 
     obs = st.text_area("Observações / Relatório de Anomalias", height=80)
     submit_button = st.form_submit_button(label="SALVAR REGISTRO NA PLANILHA")
