@@ -77,7 +77,7 @@ if IMG_SIDEBAR:
 st.sidebar.markdown('<div class="status-badge">🟢 Banco de Dados Conectado</div>', unsafe_allow_html=True)
 
 # 5. CONTEÚDO PRINCIPAL
-# A. Cabeçalho Atualizado com Bruna Felema
+# A. Cabeçalho com Créditos de Desenvolvimento
 st.markdown(f"""
     <div class="header-card">
         <img src="{IMG_HEADER}" class="header-logo">
@@ -111,7 +111,7 @@ st.markdown("""
     </table>
 """, unsafe_allow_html=True)
 
-# C. Formulário - Ajustado para não arredondar campos numéricos
+# C. Formulário
 with st.form(key="form_inspecao"):
     st.markdown('<div class="section-header">REGISTROS DE QUALIDADE</div>', unsafe_allow_html=True)
     
@@ -121,7 +121,6 @@ with st.form(key="form_inspecao"):
     with c3: op = st.text_input("O.P.")
     with c4: inspetor = st.text_input("Inspetor")
 
-    # Removido o format="%.2f" para não forçar arredondamento visual
     col_a, col_b, col_c, col_d, col_e, col_f, col_g = st.columns(7)
     with col_a: med_a = st.number_input("A", step=0.001)
     with col_b: med_b = st.number_input("B", step=0.001)
@@ -171,7 +170,7 @@ if submit_button:
                 response = requests.post(URL_API, data=json.dumps(payload))
             if response.status_code == 200:
                 st.success("✅ Registro salvo com sucesso na planilha!")
-                st.balloons()
+                # st.balloons() <-- REMOVIDO PARA TIRAR O EFEITO DE BALÕES
             else:
                 st.error(f"Erro no servidor: {response.status_code}")
         except Exception as e:
