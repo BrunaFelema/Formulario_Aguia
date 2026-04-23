@@ -3,36 +3,16 @@ import datetime
 import re
 import requests
 
-# 1. Configuracao da Pagina
+# --- MANTIVE SEU CABECALHO E CSS IGUAIS ---
 st.set_page_config(page_title="Inspecao Perfiladeira - Aguia Sistemas", layout="wide")
 
-# 2. Estilizacao CSS Profissional (Cor #242480)
 st.markdown("""
     <style>
-    .secao-header {
-        background-color: #f0f2f6;
-        border-left: 5px solid #242480;
-        padding: 10px 15px;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: #242480;
-        text-transform: uppercase;
-        font-size: 14px;
-    }
-    .stButton>button {
-        background-color: #242480;
-        color: white;
-        border-radius: 5px;
-        width: 100%;
-        font-weight: bold;
-        border: none;
-        padding: 10px;
-    }
+    .secao-header { background-color: #f0f2f6; border-left: 5px solid #242480; padding: 10px 15px; margin-top: 25px; font-weight: bold; color: #242480; text-transform: uppercase; font-size: 14px; }
+    .stButton>button { background-color: #242480; color: white; border-radius: 5px; width: 100%; font-weight: bold; border: none; padding: 10px; }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. CABECALHO TECNICO
 st.markdown("""
     <table style="width:100%; border-collapse: collapse; border: 2px solid black; font-family: sans-serif;">
         <tr>
@@ -58,7 +38,6 @@ st.markdown("""
     <br>
 """, unsafe_allow_html=True)
 
-# 4. FORMULARIO
 with st.form(key="form_inspecao"):
     st.markdown("<div class='secao-header'>Identificacao</div>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
@@ -86,10 +65,9 @@ with st.form(key="form_inspecao"):
     st.markdown("<div class='secao-header'>Observacoes</div>", unsafe_allow_html=True)
     observacoes = st.text_area("Relatorio de anomalias:", height=80)
 
-    st.markdown("<br>", unsafe_allow_html=True)
     submit_button = st.form_submit_button(label="SALVAR REGISTRO")
 
-# 5. LOGICA DE ENVIO (Com Headers de Navegador Real)
+# --- LOGICA DE ENVIO REFORMULADA ---
 if submit_button:
     if not re.match(r"^\d{2}:\d{2}$", hora_insp):
         st.error("Erro: Formato de hora invalido (HH:MM).")
@@ -97,38 +75,35 @@ if submit_button:
         st.warning("Atencao: O.P. e Inspetor sao obrigatorios.")
     else:
         try:
+            # URL pura de envio
             URL_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSc0SmUvQcLjdFhDfh3JeJgYJ617dm2OSWIt9lYy5tB21gYkeg/formResponse"
             
-            dados = {
+            # Convertendo TUDO para string e trocando ponto por virgula se necessario
+            payload = {
                 "entry.140980643": data_insp.strftime("%d/%m/%Y"), 
-                "entry.1282881006": hora_insp,
-                "entry.1955034204": op,
-                "entry.1408140739": inspetor,
-                "entry.1303788411": str(med_a),
-                "entry.1981189593": str(med_b),
-                "entry.804951831": str(med_c),
-                "entry.2073975929": str(med_d),
-                "entry.4851159": str(med_e),
-                "entry.853047564": str(med_f),
-                "entry.1047433529": str(med_g),
-                "entry.1327956538": str(emp1),
-                "entry.818151172": str(emp2),
-                "entry.908846777": str(gap),
-                "entry.1146532039": observacoes
+                "entry.1282881006": str(hora_insp),
+                "entry.1955034204": str(op),
+                "entry.1408140739": str(inspetor),
+                "entry.1303788411": str(med_a).replace('.', ','),
+                "entry.1981189593": str(med_b).replace('.', ','),
+                "entry.804951831": str(med_c).replace('.', ','),
+                "entry.2073975929": str(med_d).replace('.', ','),
+                "entry.4851159": str(med_e).replace('.', ','),
+                "entry.853047564": str(med_f).replace('.', ','),
+                "entry.1047433529": str(med_g).replace('.', ','),
+                "entry.1327956538": str(emp1).replace('.', ','),
+                "entry.818151172": str(emp2).replace('.', ','),
+                "entry.908846777": str(gap).replace('.', ','),
+                "entry.1146532039": str(observacoes)
             }
 
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
+            # Envio simplificado (sem headers complexos que podem causar 401)
+            response = requests.post(URL_FORM, data=payload)
 
-            # Envio usando POST formatado como formulario
-            response = requests.post(URL_FORM, data=dados, headers=headers)
-
-            if response.ok:
-                st.success("Registro enviado com sucesso para a planilha da Aguia Sistemas.")
+            if response.status_code == 200 or response.status_code == 302:
+                st.success("Registro enviado com sucesso!")
             else:
-                st.error(f"Erro {response.status_code}: O Google bloqueou o envio. Tente desativar protecoes contra spam no Forms.")
+                st.error(f"Erro {response.status_code}. Tente clicar no link do forms uma vez no seu navegador para 'validar' seu IP.")
 
         except Exception as e:
-            st.error(f"Erro inesperado: {e}")
+            st.error(f"Erro: {e}")
